@@ -17,22 +17,19 @@ import igwmod.render.TooltipOverlayHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -42,7 +39,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class ClientProxy implements IProxy{
     public static KeyBinding openInterfaceKey;
@@ -75,7 +73,7 @@ public class ClientProxy implements IProxy{
 
     @SubscribeEvent
     public void onKeyBind(KeyInputEvent event){
-        if(openInterfaceKey.isPressed() && FMLClientHandler.instance().getClient().inGameHasFocus) {
+        if(openInterfaceKey.isPressed() && Minecraft.getMinecraft().inGameHasFocus) {
             TickHandler.openWikiGui();
         }
     }
@@ -87,7 +85,7 @@ public class ClientProxy implements IProxy{
 
     private void addDefaultKeys(){
         //Register all basic items that have (default) pages to the item and blocks page.
-        List<ItemStack> allCreativeStacks = new ArrayList<ItemStack>();
+        NonNullList<ItemStack> allCreativeStacks = NonNullList.create();
 
         Iterator iterator = Item.REGISTRY.iterator();
         while(iterator.hasNext()) {
@@ -95,7 +93,7 @@ public class ClientProxy implements IProxy{
 
             if(item != null && item.getCreativeTab() != null) {
                 try {
-                    item.getSubItems(item, (CreativeTabs)null, allCreativeStacks);
+                    item.getSubItems(item, null, allCreativeStacks);
                 } catch(Throwable e) {
                     e.printStackTrace();
                 }
@@ -103,10 +101,10 @@ public class ClientProxy implements IProxy{
         }
 
         for(ItemStack stack : allCreativeStacks) {
-            if(stack != null && stack.getItem() != null && GameData.getItemRegistry().getNameForObject(stack.getItem()) != null) {
+            if(!stack.isEmpty()) {
                 String modid = Paths.MOD_ID.toLowerCase();
                 ResourceLocation id = Item.REGISTRY.getNameForObject(stack.getItem());
-                if(id != null && id.getResourceDomain() != null) modid = id.getResourceDomain().toLowerCase();
+                if (id != null) modid = id.getResourceDomain().toLowerCase();
                 if(stack.getUnlocalizedName() != null) {
                     List<String> info = InfoSupplier.getInfo(modid, WikiUtils.getNameFromStack(stack), true);
                     if(info != null) WikiRegistry.registerBlockAndItemPageEntry(stack);
@@ -115,14 +113,15 @@ public class ClientProxy implements IProxy{
         }
 
         //Register all entities that have (default) pages to the entity page.
-        for(Map.Entry<String, Class<? extends Entity>> entry : EntityList.NAME_TO_CLASS.entrySet()) {
-            String modid = Util.getModIdForEntity(entry.getValue());
-            if(InfoSupplier.getInfo(modid, "entity/" + entry.getKey(), true) != null) WikiRegistry.registerEntityPageEntry(entry.getValue());
+//        for(Map.Entry<String, Class<? extends Entity>> entry : EntityList.NAME_TO_CLASS.entrySet()) {
+        for (EntityEntry entry : ForgeRegistries.ENTITIES) {
+            String modid = Util.getOwnerModForEntity(entry.getEntityClass());
+            if(InfoSupplier.getInfo(modid, "entity/" + entry.getName(), true) != null) WikiRegistry.registerEntityPageEntry(entry.getEntityClass());
         }
 
         //Add automatically generated crafting recipe key mappings.
         for(IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
-            if(recipe.getRecipeOutput() != null && recipe.getRecipeOutput().getItem() != null) {
+            if(!recipe.getRecipeOutput().isEmpty()) {
                 try {
                     if(recipe.getRecipeOutput().getUnlocalizedName() == null) {
                         IGWLog.error("Item has no unlocalized name: " + recipe.getRecipeOutput().getItem());
@@ -139,7 +138,7 @@ public class ClientProxy implements IProxy{
 
         //Add automatically generated furnace recipe key mappings.
         for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
-            if(entry.getValue() != null && entry.getValue().getItem() != null) {
+            if(!entry.getValue().isEmpty()) {
                 String blockCode = WikiUtils.getNameFromStack(entry.getValue());
                 if(!IntegratorFurnace.autoMappedFurnaceRecipes.containsKey(blockCode)) IntegratorFurnace.autoMappedFurnaceRecipes.put(blockCode, entry.getKey());
             }
@@ -192,6 +191,6 @@ public class ClientProxy implements IProxy{
 
     @Override
     public EntityPlayer getPlayer(){
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 }

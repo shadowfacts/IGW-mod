@@ -40,8 +40,8 @@ public class EntityWikiTab implements IWikiTab{
     @Override
     public ItemStack renderTabIcon(GuiWiki gui){
         if(tabEntity == null) {
-            EntityPlayer player = gui.mc.thePlayer;
-            tabEntity = new EntityCreeper(player.worldObj);
+            EntityPlayer player = gui.mc.player;
+            tabEntity = new EntityCreeper(player.world);
         }
         drawEntity(tabEntity, 18, 28, 0.6F, 0);
         return null;

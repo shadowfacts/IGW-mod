@@ -20,21 +20,19 @@ repositories {
 			name "Mobius Repo"
 			url "http://mobiusstrip.eu/maven"
 		}
-		maven { // the repo from which to get NEI and stuff 
-			name 'CB Repo'
-			url "http://chickenbones.net/maven/"
-		}
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 project.ext {
 	massive = "1"
-    major = "3"
+    major = "4"
     minor = "0"
-    mcVersion = "1.9.4"
+    mcVersion = "1.11.2"
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 version = "${project.ext.massive}.${project.ext.major}.${project.minor}"
 group = "igwmod"
@@ -68,15 +66,15 @@ dependencies {
 }
 
 minecraft {
-    version = "1.9.4-12.17.0.1910-1.9.4"
-    runDir = "eclipse"
+    version = "1.11.2-13.20.0.2226"
+    runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20160518"
+    mappings = "snapshot_20170125"
 
     // replacing stuff in the source
 	replace '@MASSIVE@', project.massive

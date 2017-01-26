@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
@@ -92,7 +93,7 @@ public class InfoSupplier{
                 String s = IGWMod.proxy.getSaveLocation() + "\\igwmod\\" + oldObjectName.substring(7) + ".txt";
                 stream = new FileInputStream(new File(s));
             } else {
-                IResourceManager manager = FMLClientHandler.instance().getClient().getResourceManager();
+                IResourceManager manager = Minecraft.getMinecraft().getResourceManager();
                 ResourceLocation location = infoMap.get(objectName);
                 IResource resource = manager.getResource(location);
                 stream = resource.getInputStream();

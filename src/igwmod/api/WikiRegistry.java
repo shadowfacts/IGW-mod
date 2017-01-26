@@ -16,6 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class WikiRegistry{
@@ -57,7 +59,7 @@ public class WikiRegistry{
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass){
-        registerEntityPageEntry(entityClass, "entity/" + EntityList.CLASS_TO_NAME.get(entityClass));
+        registerEntityPageEntry(entityClass, "entity/" + ForgeRegistries.ENTITIES.getValue(EntityList.getKey(entityClass)).getName());
     }
 
     public static void registerEntityPageEntry(Class<? extends Entity> entityClass, String page){
@@ -87,12 +89,12 @@ public class WikiRegistry{
         if(page != null) {
             return page;
         } else {
-            return "entity/" + EntityList.CLASS_TO_NAME.get(entityClass);
+            return "entity/" + ForgeRegistries.ENTITIES.getValue(EntityList.getKey(entityClass)).getName();
         }
     }
 
     public static List<ItemStack> getItemAndBlockPageEntries(){
-        List<ItemStack> entries = new ArrayList<ItemStack>();
+        NonNullList<ItemStack> entries = NonNullList.create();
         for(Map.Entry<String, ItemStack> entry : itemAndBlockPageEntries) {
             if(entry.getValue().getItemDamage() == OreDictionary.WILDCARD_VALUE) {
                 entry.getValue().getItem().getSubItems(entry.getValue().getItem(), CreativeTabs.SEARCH, entries);

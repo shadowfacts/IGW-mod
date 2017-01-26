@@ -116,7 +116,7 @@ public class GuiWiki extends GuiContainer{
 
             String lastSearch = "";
             if(searchField != null) lastSearch = searchField.getText();
-            searchField = new GuiTextField(0, fontRendererObj, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRendererObj.FONT_HEIGHT);
+            searchField = new GuiTextField(0, fontRenderer, guiLeft + 40, guiTop + currentTab.getSearchBarAndScrollStartY(), 53, fontRenderer.FONT_HEIGHT);
             searchField.setMaxStringLength(15);
             searchField.setEnableBackgroundDrawing(true);
             searchField.setVisible(true);
@@ -135,7 +135,7 @@ public class GuiWiki extends GuiContainer{
     }
 
     public FontRenderer getFontRenderer(){
-        return fontRendererObj;
+        return fontRenderer;
     }
 
     public int getGuiLeft(){
@@ -243,7 +243,7 @@ public class GuiWiki extends GuiContainer{
         MinecraftForge.EVENT_BUS.post(wikiEvent);
         if(stack != null) {
             stack = stack.copy();
-            stack.stackSize = 1;
+            stack.setCount(1);
         }
 
         setCurrentFile(wikiEvent.pageOpened, stack);
@@ -276,7 +276,7 @@ public class GuiWiki extends GuiContainer{
             updateSearch();
         } else {
             if(ClientProxy.openInterfaceKey.getKeyCode() == par2) {
-                mc.thePlayer.closeScreen();
+                mc.player.closeScreen();
             } else {
                 super.keyTyped(par1, par2);
             }
@@ -330,7 +330,7 @@ public class GuiWiki extends GuiContainer{
             maxTranslation = Math.max(maxTranslation, texture.getY() + texture.getHeight());
         }
         for(LocatedString string : locatedStrings) {
-            maxTranslation = Math.max(maxTranslation, string.getY() + fontRendererObj.FONT_HEIGHT);
+            maxTranslation = Math.max(maxTranslation, string.getY() + fontRenderer.FONT_HEIGHT);
         }
         return Math.max(maxTranslation - currentPageTranslation - MAX_TEXT_Y, 0);
     }
@@ -502,7 +502,7 @@ public class GuiWiki extends GuiContainer{
 
         //draw the tab page browse text if necessary
         if(hasMultipleTabPages()) {
-            fontRendererObj.drawString(currentTabPage + 1 + "/" + getTotalTabPages(), 10, 221, 0xFF000000);
+            fontRenderer.drawString(currentTabPage + 1 + "/" + getTotalTabPages(), 10, 221, 0xFF000000);
         }
 
         //Draw the wiki page stacks.
@@ -561,7 +561,7 @@ public class GuiWiki extends GuiContainer{
         List<IWikiTab> visibleTabs = getVisibleTabs();
         for(int i = 0; i < visibleTabs.size(); i++) {
             if(x <= 33 + guiLeft && x >= 1 + guiLeft && y >= 4 + guiTop + i * 35 && y <= 39 + guiTop + i * 35) {
-                drawCreativeTabHoveringText(I18n.format(visibleTabs.get(i).getName()), x - guiLeft, y - guiTop);
+                drawHoveringText(I18n.format(visibleTabs.get(i).getName()), x - guiLeft, y - guiTop);
             }
         }
         if(hasMultipleTabPages() && x < 33 + guiLeft && x >= 1 + guiLeft && y >= 214 + guiTop && y <= 236 + guiTop) {
@@ -595,7 +595,7 @@ public class GuiWiki extends GuiContainer{
                 if(pageStack != null) {
                     modid = WikiUtils.getOwningModId(pageStack);
                 } else if(pageEntity != null) {
-                    modid = Util.getModIdForEntity(pageEntity.getClass());
+                    modid = Util.getOwnerModForEntity(pageEntity.getClass());
                 } else if(o instanceof String) {
                     modid = (String)o;
                 } else {
@@ -615,7 +615,7 @@ public class GuiWiki extends GuiContainer{
         List<IReservedSpace> reservedSpaces = currentTab.getReservedSpaces();
         if(reservedSpaces == null) reservedSpaces = new ArrayList<IReservedSpace>();
         reservedSpaces.add(new ReservedSpace(new Rectangle(0, 0, 200, Integer.MAX_VALUE)));
-        InfoSupplier.analyseInfo(fontRendererObj, fileInfo, reservedSpaces, locatedStrings, locatedStacks, locatedTextures);
+        InfoSupplier.analyseInfo(fontRenderer, fileInfo, reservedSpaces, locatedStrings, locatedStacks, locatedTextures);
         ((ContainerBlockWiki)inventorySlots).updateStacks(locatedStacks, visibleWikiPages);
         currentPageTranslation = 0;
         currentPageScroll = 0;
@@ -772,7 +772,7 @@ public class GuiWiki extends GuiContainer{
 
     public void renderRotatingBlockIntoGUI(GuiWiki gui, ItemStack stack, int x, int y, float scale){
         if(entityItem == null) {
-            entityItem = new EntityItem(gui.mc.theWorld);
+            entityItem = new EntityItem(gui.mc.world);
             renderItem = new RenderEntityItem(Minecraft.getMinecraft().getRenderManager(), Minecraft.getMinecraft().getRenderItem()){
                 @Override
                 public boolean shouldBob(){

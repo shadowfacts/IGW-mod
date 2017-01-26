@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.RenderHelper;
@@ -19,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 public class LocatedEntity extends Gui implements IReservedSpace, IPageLink{
-    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;
+    protected static FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
     public final Entity entity;
     private int x, y;
     private final float scale;

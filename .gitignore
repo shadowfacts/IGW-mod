@@ -4,6 +4,9 @@ ideeen.docx
 drone.txt
 unused resources
 /bin
+run/
+out/
+.DS_Store
 
 *.class
 
@@ -13,6 +16,8 @@ unused resources
 *.ear
 
 *.iml
+*.ipr
+*.iws
 
 environment.properties
 *.db

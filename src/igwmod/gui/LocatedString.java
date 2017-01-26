@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import igwmod.lib.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -19,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
-    protected static FontRenderer fontRenderer = FMLClientHandler.instance().getClient().fontRendererObj;
+    protected static FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
     private final String string;
     private String cappedText;
     private int x;
@@ -91,7 +92,7 @@ public class LocatedString extends Gui implements IPageLink, GuiYesNoCallback{
 
     @Override
     public void confirmClicked(boolean result, int value){
-        if(result) igwmod.lib.Util.openBrowser(linkAddress);
+        if(result) Util.openBrowser(linkAddress);
         Minecraft.getMinecraft().displayGuiScreen(parentGui);
     }
 

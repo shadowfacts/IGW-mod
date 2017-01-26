@@ -8,6 +8,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 /**
  * This class is derived from Vanilla's ContainerCreative class.
@@ -21,8 +22,8 @@ class ContainerBlockWiki extends Container{
         for(IPageLink link : pageLinks)
             if(link instanceof LocatedStack) invSize++;
         InventoryBasic inventory = new InventoryBasic("tmp", true, invSize);
-        inventorySlots = new ArrayList();
-        inventoryItemStacks = new ArrayList();
+        inventorySlots = new ArrayList<>();
+        inventoryItemStacks = NonNullList.create();
         int curSlot = 0;
         for(LocatedStack stack : stacks) {
             if(stack.y >= GuiWiki.MIN_TEXT_Y * GuiWiki.TEXT_SCALE && 16 + stack.y <= GuiWiki.MAX_TEXT_Y * GuiWiki.TEXT_SCALE) {

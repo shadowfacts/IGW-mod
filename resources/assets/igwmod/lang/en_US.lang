@@ -7,11 +7,11 @@ igwmod.tooltip.tabPageBrowse.next=Left click to navigate to the next page
 igwmod.tooltip.tabPageBrowse.previous=Right click to navigate to the previous page
 
 igwtab.entry.intro=Intro
-igwtab.entry.forServers=For Servers
-igwtab.entry.devIntro=Dev: Intro
-igwtab.entry.devItemAndBlock=Dev: Item & Block Page
-igwtab.entry.devPageCommands=Dev: Page Commands
-igwtab.entry.devForModders=Dev: For Modders
+igwtab.entry.for_servers=For Servers
+igwtab.entry.dev_intro=Dev: Intro
+igwtab.entry.dev_item_and_block=Dev: Item & Block Page
+igwtab.entry.dev_page_commands=Dev: Page Commands
+igwtab.entry.dev_for_modders=Dev: For Modders
 
 igwmod.gui.crafting.shapeless=Shapeless Crafting
 igwmod.gui.crafting.shaped=Shaped Crafting
